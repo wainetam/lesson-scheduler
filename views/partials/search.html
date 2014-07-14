@@ -20,15 +20,16 @@
 
     <div class="clearfix"></div>
     <div class="search-results">
-      <div ng-repeat="teacher in dataset.byteacher">
+      <div ng-repeat="teacher in dataset.byteacher | orderBy:'email'">
         <div class="teacher-timeslot">
-          <h3>{{ teacher.email }}</h3>
+          <h3 ng-hide="noTimeslots(teacher)">{{ teacher.email }}</h3> <!-- hide if teacher has zero timeslots open -->
           <ul>
-            <li id="{{ teacher.timeslotObj[$index].date | date: 'M.d' }}" ng-repeat="obj in teacher.timeslotObj">
-              <div class="timeslot-date"><h4>{{ teacher.timeslotObj[$index].date | date: 'MMMM d' }}</h4></div>
+            <li id="{{ teacher.timeslotObj[$index].date | date: 'M.dd' }}" ng-repeat="obj in teacher.timeslotObj | filter: { date: this.filterDay }">
+              <div class="timeslot-date"><h4>{{ teacher.timeslotObj[$index].date | date: 'M.dd'}}</h4></div>
+               <!-- | date: 'MMMM d' -->
               <div class="timeslot-time"><h4>Time: {{ teacher.timeslotObj[$index].start }} -
               {{ teacher.timeslotObj[$index].end }}</h4></div>
-              <button class="btn btn-success timeslot-btn" ng-click="">Request</button>
+              <button class="btn btn-success timeslot-btn btn-sm" ng-click="">Request</button>
             </li>
           </ul>
         </div>

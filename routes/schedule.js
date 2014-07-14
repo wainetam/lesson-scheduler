@@ -141,7 +141,7 @@ router.get('/byteacher/show', function(req, res) { // by teachers
         });
       }, function(err) {
         if(err) { console.log(err); }
-        console.log('pre send JSON of teacherArr', teacherArr);
+        // console.log('pre send JSON of teacherArr', teacherArr);
         res.json(teacherArr);
       });
     });

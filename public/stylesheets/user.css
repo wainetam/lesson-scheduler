@@ -34,3 +34,9 @@ ol, ul, li {
   margin-left: auto;
   margin-right: auto;
 }
+
+.banner-inline {
+  display: inline-block;
+  color: green;
+
+}

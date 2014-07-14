@@ -1,25 +1,42 @@
 angular.module('teacher.controllers', []).
-  controller('Teacher', ['$scope', '$http', '$location', function($scope, $http, $location) {
+  controller('Teacher', ['$scope', '$http', '$location', '$filter', function($scope, $http, $location, $filter) {
     $scope.form = {
       time: null,
       email: "",
       available: []
     };
 
-    $scope.weekdates = ['Time', '7.14', '7.15', '7.16', '7.17', '7.18', '7.19', '7.20']; // move to service
+
+    var weekdatesGenerator = function(monthNow, dayNow, numberOfDays) {
+      var weekdates = [];
+      var futureDay;
+      for(var i = 0; i < numberOfDays; i++) {
+        futureDay = moment.utc(new Date(2014, monthNow - 1 , dayNow)).toISOString();
+        weekdates.push(futureDay);
+      }
+      // var sortDate = moment.utc(new Date(2014, monthNow - 1 , dayNow)).toISOString();
+      // console.log('sortDate after moment', sortDate);
+      console.log('weekdates', weekdates);
+      return weekdates;
+    };
+
+    $scope.weekdates = ['Time', '7.15', '7.16', '7.17', '7.18', '7.19', '7.20', '7.21']; // move to service
     $scope.day = [9,10,11,12,13,14,15,16,17,18,19,20,21];
     $scope.daycount = [0,1,2,3,4,5,6]; // len
     $scope.dataset = {
       bytime: [],
       byteacher: []
     };
-    $scope.dayToSortBy = null;
+    $scope.filterDay = '';
+    $scope.banner = null;
+    // $scope.testDate = '2014-07-19T04:00:00.000Z';
 
     $scope.submitCal = function() {
       if($scope.form.email) {
         console.log('form', $scope.form);
         $http.post('/schedule/submit', $scope.form).success(function(response) {
           console.log('submitCal success', response);
+          $scope.banner = "Your available times have been registered";
         });
       }
     };
@@ -36,20 +53,26 @@ angular.module('teacher.controllers', []).
       console.log($scope.form.available);
     };
 
-    $scope.sortByDay = function(day) {
-      $scope.dayToSortBy = day || null;
-      console.log("sorting!");
-      console.log($scope.dayToSortBy);
+    var convertSortDateToIsoDate = function(sortDay) {
+      var dayStr = sortDay.toString();
+
+      var month = dayStr.split('.')[0];
+      var day = dayStr.split('.')[1];
+
+      var sortDate = moment.utc(new Date(2014, month - 1 , day)).toISOString();
+      console.log('sortDate after moment', sortDate);
+      return sortDate.toString();
     };
 
-    $scope.matchSortDay = function(obj) {
-      console.log('id', obj.id);
-      if(obj.id === $scope.dayToSortBy) {
-        console.log(true);
-        return true;
-      } else {
-        return false;
-      }
+    $scope.sortByDay = function(day) {
+      console.log('this.day', day);
+      $scope.filterDay = convertSortDateToIsoDate(day) || '';
+      console.log("sorting!");
+      console.log($scope.filterDay);
+    };
+
+    $scope.noTimeslots = function(teacherObj) {
+      return teacherObj.timeslots.length === 0;
     };
 
     var init = function() {
@@ -67,6 +90,6 @@ angular.module('teacher.controllers', []).
 
 
 angular.module('student.controllers', []).
-  controller('Student', ['$scope', '$http', '$location', function($scope, $http, $location) {
+  controller('Student', ['$scope', '$http', '$location', '$filter', function($scope, $http, $location, $filter) {
 
 }]);
