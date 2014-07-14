@@ -77,16 +77,19 @@ router.post('/submit', function(req, res) {
         var timeDayArr = timeDayVal.split(' '); // '9 7.14' --> ['9', '7.14']
         var start = parseInt(timeDayArr[0], 10);
         var end = start + lessonDuration; // assumes that length is ONE HOUR
-        var date = {
-          month: timeDayArr[1].split('.')[0],
-          day: timeDayArr[1].split('.')[1] // date[0] is month; date[1] is day
-        };
+        // var date = {
+        //   month: timeDayArr[1].split('.')[0],
+        //   day: timeDayArr[1].split('.')[1] // date[0] is month; date[1] is day
+        // };
+        var date = timeDayArr[1];
+
         console.log(date);
 
         models.Timeslot.create({
           start: start,
           end: end,
-          date: moment(new Date(2014, date.month - 1 , date.day)), // months are zero indexed with moment
+          date: date,
+          // date: moment(new Date(2014, date.month - 1 , date.day)), // months are zero indexed with moment
           teacher: teacher.id
         }, function(err, timeslot) {
           teacher.timeslots.push(timeslot._id);

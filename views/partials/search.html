@@ -9,7 +9,7 @@
 
     <div class="button-nav container">
       <div class="btn-group div-left">
-        <button ng-repeat="date in weekdates" ng-click="sortByDay(this.date)" ng-show="!$first" type="button" class="btn btn-default">{{ weekdates[$index] }}</button>
+        <button ng-repeat="date in weekdates" ng-click="sortByDay(this.date)" ng-show="!$first" type="button" class="btn btn-default">{{ weekdates[$index] | date: 'M.dd' }}</button>
       </div>
       <div class="btn-group div-right">
         <button type="button" ng-click="" class="btn btn-default">Morning</button>
@@ -24,7 +24,10 @@
         <div class="teacher-timeslot">
           <h3 ng-hide="noTimeslots(teacher)">{{ teacher.email }}</h3> <!-- hide if teacher has zero timeslots open -->
           <ul>
-            <li id="{{ teacher.timeslotObj[$index].date | date: 'M.dd' }}" ng-repeat="obj in teacher.timeslotObj | filter: { date: this.filterDay }">
+            <li id="{{ teacher.timeslotObj[$index].date }}" ng-repeat="obj in teacher.timeslotObj | array | filter:this.filterDay">
+
+              <!-- ng-repeat="obj in teacher.timeslotObj | array | filter:this.filterDay: -->
+              <!-- filter:{date: this.filterDay} -->
               <div class="timeslot-date"><h4>{{ teacher.timeslotObj[$index].date | date: 'M.dd'}}</h4></div>
                <!-- | date: 'MMMM d' -->
               <div class="timeslot-time"><h4>Time: {{ teacher.timeslotObj[$index].start }} -

@@ -1,24 +1,37 @@
 angular.module('app.filters', [])
-  .filter('dayMatchFilter', function() {
-    return function(timeslotObj) {
-      var dayString = $scope.dayToSortBy;
+    .filter('array', function() {
+      return function(items) {
+        var filtered = [];
+        angular.forEach(items, function(item) {
+            // angular.forEach(item, function(subItem) {
+                // filtered.push(subItem);
+            // });
+          filtered.push(item.date);
+        });
+        console.log('filteredarr', filtered);
+       return filtered;
+      };
+    });
 
-      var month = dayString.split('.')[0];
-      var day = dayString.split('.')[1];
+// .filter('dayMatchFilter', function() {
+//     return function(timeslotObj) {
+//       var dayString = $scope.dayToSortBy;
 
-      var sortDate = moment.utc(new Date(2014, month - 1 , day)).toISOString();
-      console.log('sortDate after moment', sortDate);
+//       var month = dayString.split('.')[0];
+//       var day = dayString.split('.')[1];
 
-      timeslotObj.forEach(function(dateObj) {
-        var d = dateObj.date;
-        if(JSON.stringify(d) == JSON.stringify(sortDate)) {
-          return true;
-        } else {
-          return false;
-        }
-      });
-    };
-  });
+//       var sortDate = moment.utc(new Date(2014, month - 1 , day)).toISOString();
+//       console.log('sortDate after moment', sortDate);
+
+//       timeslotObj.forEach(function(dateObj) {
+//         var d = dateObj.date;
+//         if(JSON.stringify(d) == JSON.stringify(sortDate)) {
+//           return true;
+//         } else {
+//           return false;
+//         }
+//       });
+//     })
 
 // $scope.dayFilter = function(timeslotObj) {
 //       console.log('tsObj', timeslotObj);

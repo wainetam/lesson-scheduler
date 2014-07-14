@@ -6,23 +6,24 @@ angular.module('teacher.controllers', []).
       available: []
     };
 
-
     var weekdatesGenerator = function(monthNow, dayNow, numberOfDays) {
-      var weekdates = [];
+      var weekdatesArr = ['Time']; // 'Time' is top-left header in table
       var futureDay;
-      for(var i = 0; i < numberOfDays; i++) {
-        futureDay = moment.utc(new Date(2014, monthNow - 1 , dayNow)).toISOString();
-        weekdates.push(futureDay);
+      for(var i = 1; i <= numberOfDays; i++) {
+        futureDay = moment.utc(new Date(2014, monthNow - 1 , dayNow+i)).toISOString();
+        weekdatesArr.push(futureDay);
       }
       // var sortDate = moment.utc(new Date(2014, monthNow - 1 , dayNow)).toISOString();
       // console.log('sortDate after moment', sortDate);
-      console.log('weekdates', weekdates);
-      return weekdates;
+      console.log('weekdates', weekdatesArr);
+      return weekdatesArr;
     };
 
-    $scope.weekdates = ['Time', '7.15', '7.16', '7.17', '7.18', '7.19', '7.20', '7.21']; // move to service
-    $scope.day = [9,10,11,12,13,14,15,16,17,18,19,20,21];
-    $scope.daycount = [0,1,2,3,4,5,6]; // len
+    $scope.weekdates = weekdatesGenerator(7,15,7);
+
+    // $scope.weekdates = ['Time', '7.15', '7.16', '7.17', '7.18', '7.19', '7.20', '7.21']; // move to service
+    $scope.day = [9,10,11,12,13,14,15,16,17,18,19,20,21]; // times
+    $scope.daycount = [0,1,2,3,4,5,6]; // length
     $scope.dataset = {
       bytime: [],
       byteacher: []
@@ -53,26 +54,32 @@ angular.module('teacher.controllers', []).
       console.log($scope.form.available);
     };
 
-    var convertSortDateToIsoDate = function(sortDay) {
-      var dayStr = sortDay.toString();
+    // var convertSortDateToIsoDate = function(sortDay) {
+    //   var dayStr = sortDay.toString();
 
-      var month = dayStr.split('.')[0];
-      var day = dayStr.split('.')[1];
+    //   var month = dayStr.split('.')[0];
+    //   var day = dayStr.split('.')[1];
 
-      var sortDate = moment.utc(new Date(2014, month - 1 , day)).toISOString();
-      console.log('sortDate after moment', sortDate);
-      return sortDate.toString();
-    };
+    //   var sortDate = moment.utc(new Date(2014, month - 1 , day)).toISOString();
+    //   console.log('sortDate after moment', sortDate);
+    //   return sortDate.toString();
+    // };
 
     $scope.sortByDay = function(day) {
       console.log('this.day', day);
-      $scope.filterDay = convertSortDateToIsoDate(day) || '';
+      $scope.filterDay = day;
+      // $scope.filterDay = convertSortDateToIsoDate(day) || '';
       console.log("sorting!");
-      console.log($scope.filterDay);
+      console.log('$filterDay for sorting', $scope.filterDay);
     };
 
     $scope.noTimeslots = function(teacherObj) {
       return teacherObj.timeslots.length === 0;
+    };
+
+    $scope.regexFilter = function (dateStr) {
+      var reg = RegExp($scope.filterDay);
+      return reg.test(dateStr);
     };
 
     var init = function() {
