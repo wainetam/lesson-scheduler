@@ -1,0 +1,91 @@
+/* Extra small devices (phones, less than 768px) */
+/* No media query since this is the default in Bootstrap */
+
+/*.container {
+  max-width: 800px;
+  background-color: #FFFFFF;
+  margin-right: auto;
+  margin-left: auto;
+}*/
+
+.break {
+  border: none;
+  background: #D8D8D8;
+  height: 1px;
+  width: 75%;
+}
+
+.cta-left { /*call to action*/
+  float: left;
+  width: 50%;
+}
+
+.cta-right {
+  float: right;
+  width: 50%;
+}
+
+header {
+  padding: 1px;
+  margin-top: 0px;
+}
+
+.hero {
+  width: 50%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.header-hero {
+  margin: 40px 0 40px 0;
+}
+
+img {
+  outline: none;
+}
+
+.header-hero img {
+  width: 50%;
+}
+
+.img-center {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+a:visited {
+  color: black;
+}
+
+a, a:hover {
+  text-decoration: none;
+}
+
+a:hover {
+  color: #551a8b;
+}
+
+.main {
+  padding: 1px;
+  margin: 40px 0 40px 0;
+}
+
+
+footer {
+  padding: 1px;
+  margin-bottom: 20px;
+}
+
+h1, h2, h3, h4, p {
+  color: black;
+  font-family: "HelveticaNeue-Light", Helvetica, Arial, sans-serif;
+  font-style: normal;
+  font-weight: lighter;
+  margin: 0;
+}
+

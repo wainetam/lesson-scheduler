@@ -1,0 +1,38 @@
+<body ng-controller="Teacher">
+  {% raw %}
+
+  <section class="container">
+    <h2 class='text-center'>Teacher: Select Available Times</h2>
+
+    <hr class="break" />
+
+    <div>
+      <form class="form-inline" ng-submit="submitCal()">
+        <!-- <label for="amznEmail">Email address</label> -->
+        <div class="form-group">
+          <input class='form-control' type: "email" placeholder="Email" ng-model="form.email" name="email">
+        </div>
+        <button class='btn btn-success' type="submit">Submit</button>
+      </form>
+    </div>
+
+    <div class="calendar">
+      <table class='table table-striped'>
+        <thead>
+          <tr>
+            <th ng-repeat="date in weekdates">{{ weekdates[$index] }}</th>
+          <tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="hour in day"> <!-- 9,10,11,etc -->
+            <td>{{ day[$index] }}</td>
+            <td ng-repeat="count in daycount"><input type="checkbox" name="calendar" ng-checked ="" ng-click="toggleSchedule(this.$$watchers[1].last)" value='{{ hour }} {{ weekdates[$index + 1] }}'/></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+  {% endraw %}
+</body>
