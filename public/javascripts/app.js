@@ -1,7 +1,7 @@
 var app = {};
 
 // TEACHER SPA
-app.teacher = angular.module('teacher',
+app.teacher = angular.module('app.teacher',
   ['teacher.controllers',
   // 'teacher.services',
   // 'teacher.filters',
@@ -25,8 +25,9 @@ app.teacher.config(['$routeProvider', '$locationProvider', function($routeProvid
 }]);
 
 // STUDENT SPA
-app.student = angular.module('student',
+app.student = angular.module('app.student',
   ['student.controllers',
+  'teacher.controllers',
   // 'student.services',
   // 'student.filters',
   'ngRoute',
@@ -37,7 +38,7 @@ app.student.config(['$routeProvider', '$locationProvider', function($routeProvid
   $routeProvider
     .when('/', {
       templateUrl: 'partials/search.html',
-      controller: 'Student'
+      controller: 'Teacher'
     })
     // .when('/dashboard', {
     //   templateUrl: 'partials/dash.html',

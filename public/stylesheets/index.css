@@ -32,8 +32,19 @@ header {
 
 .hero {
   width: 50%;
+}
+
+.div-center {
   margin-right: auto;
   margin-left: auto;
+}
+
+.div-left {
+  float: left;
+}
+
+.div-right {
+  float: right;
 }
 
 .text-center {

@@ -11,7 +11,7 @@ var studentSchema = new Schema({
   email: String,
   firstName: String,
   lastName: String,
-  schedule: { type: Schema.Types.ObjectId, ref: 'Schedule' }
+  schedule: { type: Schema.Types.ObjectId, ref: 'Timeslot' }
 });
 
 var teacherSchema = new Schema({
@@ -80,7 +80,7 @@ var timeslotSchema = new Schema({
   confirmed: { type: Boolean, default: false }, // to be confirmed by teacher
   reservedFor: { type: Schema.Types.ObjectId, ref: 'Student', default: null }, // if confirmed,
   length: { type: Number, default: 30 },
-  teacher: { type: Schema.Types.ObjectId, ref: 'Schedule' }
+  teacher: { type: Schema.Types.ObjectId, ref: 'Teacher' }
 });
 
 Student = mongoose.model('Student', studentSchema);
