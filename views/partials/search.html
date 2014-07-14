@@ -24,8 +24,8 @@
         <div class="teacher-timeslot">
           <h3 ng-hide="noTimeslots(teacher)">{{ teacher.email }}</h3> <!-- hide if teacher has zero timeslots open -->
           <ul>
-            <li id="{{ teacher.timeslotObj[$index].date }}" ng-repeat="obj in teacher.timeslotObj | array | filter:this.filterDay">
-
+            <li id="{{ teacher.timeslotObj[$index].date }}" ng-repeat="obj in teacher.timeslotObj | filter:{date: this.filterDay}">
+<!-- | array | filter:this.filterDay"> -->
               <!-- ng-repeat="obj in teacher.timeslotObj | array | filter:this.filterDay: -->
               <!-- filter:{date: this.filterDay} -->
               <div class="timeslot-date"><h4>{{ teacher.timeslotObj[$index].date | date: 'M.dd'}}</h4></div>
