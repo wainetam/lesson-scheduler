@@ -6,7 +6,7 @@ var Q = require('q'),
     async = require('async'),
     moment = require('moment');
 
-var lessonDuration = 30; // in minutes;
+var lessonDuration = 1; // in hours;
 
 var Timeslot = function(date, start, end, teacher, reservedFor, requestedBy) {
   this.date = date;

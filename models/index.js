@@ -1,5 +1,10 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/okpanda');
+
+if(process.env.NODE_ENV === 'production') {
+  mongoose.connect(process.env.MONGOLAB_URI);
+} else {
+  mongoose.connect('mongodb://localhost/okpanda');
+}
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error: '));
