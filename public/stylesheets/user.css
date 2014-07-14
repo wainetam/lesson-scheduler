@@ -10,3 +10,7 @@
 .button-nav {
   width: 60%;
 }
+
+ol, ul, li {
+  list-style-type: none
+}

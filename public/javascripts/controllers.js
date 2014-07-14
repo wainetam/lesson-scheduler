@@ -9,7 +9,10 @@ angular.module('teacher.controllers', []).
     $scope.weekdates = ['Time', '7.14', '7.15', '7.16', '7.17', '7.18', '7.19', '7.20']; // move to service
     $scope.day = [9,10,11,12,13,14,15,16,17,18,19,20,21];
     $scope.daycount = [0,1,2,3,4,5,6]; // len
-    $scope.availableForStudents = [];
+    $scope.dataset = {
+      bytime: [],
+      byteacher: []
+    };
 
     $scope.submitCal = function() {
       if($scope.form.email) {
@@ -35,11 +38,18 @@ angular.module('teacher.controllers', []).
       console.log($scope.form.available);
     };
 
-    var init = function() {
-      $http.get('/schedule/show').success(function(data, status, headers, config) {
-        console.log('data', data);
-        $scope.availableForStudents = data;
+    $scope.sortByDay = function(day) {
+      console.log("sorting!");
+      console.log(day);
+    };
 
+    var init = function() {
+      $http.get('/schedule/bytime/show').success(function(dataByTime, status, headers, config) {
+        $http.get('/schedule/byteacher/show').success(function(dataByTeacher, status, headers, config) {
+          $scope.dataset.bytime = dataByTime;
+          $scope.dataset.byteacher = dataByTeacher;
+          console.log('dataset', $scope.dataset);
+        });
       });
     };
 

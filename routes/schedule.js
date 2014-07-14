@@ -16,6 +16,12 @@ var Timeslot = function(date, start, end, teacher, reservedFor, requestedBy) {
   this.requestedBy = requestedBy;
 };
 
+var Teacher = function(email, timeslots) {
+  this.email = email;
+  this.timeslots = timeslots;
+  this.timeslotObj = [];
+};
+
 router.post('/submit', function(req, res) {
   models.Teacher.findOneAndUpdate({email: req.body.email}, {}, {upsert:true}, function(err, teacher) {
     if(err) { console.log(err); }
@@ -55,16 +61,19 @@ router.post('/submit', function(req, res) {
       //   });
       // });
 
+      teacher.timeslots = [];
+
       if(availableTimes.length === 0) {
-        teacher.timeslots = [];
+        // teacher.timeslots = [];
         teacher.save(function(err, teacher) {
           console.log('teacher in ts create', teacher);
           res.send(200, 'found teacher');
         });
       }
 
-      availableTimes.forEach(function(timeDayVal) {
-        // console.log('timeDayVal data', timeDayVal);
+      console.log('availTimes.length', availableTimes.length);
+
+      async.each(availableTimes, function(timeDayVal, cb) {
         var timeDayArr = timeDayVal.split(' '); // '9 7.14' --> ['9', '7.14']
         var start = parseInt(timeDayArr[0], 10);
         var end = start + 1; // assumes that length is ONE HOUR
@@ -81,15 +90,21 @@ router.post('/submit', function(req, res) {
           teacher: teacher.id
         }, function(err, timeslot) {
           // console.log('timeslot in create', timeslot);
-          console.log('teacher before push', teacher);
-          teacher.timeslots = [];
+          // console.log('teacher before push', teacher);
           teacher.timeslots.push(timeslot._id);
-          teacher.save(function(err, teacher) {
-            console.log('teacher in ts create', teacher);
-            res.send(200, 'found teacher');
-          });
+          // teacher.save(function(err, teacher) {
+            // console.log('teacher in ts create', teacher);
+            cb(null);
+          // });
+        });
+      }, function(err) {
+        if(err) { console.log(err); }
+        teacher.save(function(err, teacher) {
+          res.send(200, 'found teacher');
         });
       });
+        // .forEach(function(timeDayVal) {
+      // });
     });
     // teacher.timeslots = null;
     // teacher.save();
@@ -97,7 +112,7 @@ router.post('/submit', function(req, res) {
   });
 });
 
-router.get('/show', function(req, res) {
+router.get('/bytime/show', function(req, res) { // by timeslots
   models.Timeslot.find({}, function(err, timeslots) {
     if(err) { console.log(err); }
 
@@ -105,15 +120,49 @@ router.get('/show', function(req, res) {
       cb(err, new Timeslot(t.date, t.start, t.end, t.teacher, t.reservedFor, t.requestedBy));
     }, function(err, timeslotArr) {
       async.eachSeries(timeslotArr, function(t, cb) { // populate timeslots with teacherObjs
-        console.log('t', t);
+        // console.log('t', t);
         models.Teacher.findById(t.teacher, function(err, teacher) {
-          console.log('teacher', teacher);
+          // console.log('teacher', teacher);
           t.teacherObj = teacher;
           cb(null);
         });
       }, function(err) {
         if(err) { console.log(err); }
         res.json(timeslotArr);
+      });
+    });
+  });
+});
+
+router.get('/byteacher/show', function(req, res) { // by teachers
+  models.Teacher.find({}, function(err, teachers) {
+    if(err) { console.log(err); }
+    console.log('byteacher', teachers);
+
+    async.mapSeries(teachers, function(t, cb1) {
+      cb1(err, new Teacher(t.email, t.timeslots));
+    }, function(err, teacherArr) {
+      async.eachSeries(teacherArr, function(tInstance, cb2) { // populate timeslots with teacherObjs
+        async.eachSeries(tInstance.timeslots, function(timeslotId, cb3) {
+          // console.log('id?', timeslotId);
+          models.Timeslot.find({ _id: timeslotId }, function(err, tObj) {
+          // console.log('t.timeslotObj', tInstance.timeslotObj);
+          // console.log('tObj?', tObj[0]);
+          // console.log('tInstance', tInstance);
+          tInstance.timeslotObj.push(tObj[0]);
+          // console.log('post push of TimeslotObj?', tInstance.timeslotObj);
+          // console.log('post push of teacherArr', teacherArr);
+          cb3(null);
+        }, function(err) {
+          if(err) { console.log(err); }
+          cb2(null);
+          // console.log('post push of TimeslotObj?', tInstance.timeslotObj);
+          });
+        }, function(err) {
+          if(err) { console.log(err); }
+          // console.log('pre send JSON of teacherArr', teacherArr);
+          res.json(teacherArr);
+        });
       });
     });
   });

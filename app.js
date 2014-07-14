@@ -36,6 +36,8 @@ app.use('/teacher', express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/schedule', schedule);
+// app.use('/student', student);
+// app.use('/teacher', teacher);
 // app.use('/partials/:name', routes);
 // app.use('/users', users);
 // app.use('/teacher', teacher);
