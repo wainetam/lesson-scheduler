@@ -6,6 +6,8 @@ var Q = require('q'),
     async = require('async'),
     moment = require('moment');
 
+var lessonDuration = 30; // in minutes;
+
 var Timeslot = function(date, start, end, teacher, reservedFor, requestedBy) {
   this.date = date;
   this.start = start;
@@ -22,6 +24,34 @@ var Teacher = function(email, timeslots) {
   this.timeslotObj = [];
 };
 
+var incrementBy30Min = function(start) {  // assumes INCREMENT IS 30min
+  var str = start.toString();
+  var numArr = str.split('');
+
+  if(numArr.length === 3) {
+    numArr.unshift('0');
+  }
+
+  var minutes = numArr.slice(2).join('');
+  var hours = numArr.slice(0,2).join('');
+
+  var updatedMinutes;
+  var updatedHours;
+
+  if(minutes === '30') {
+    updatedMinutes = '00';
+    updatedHours = (parseInt(hours, 10) + 1).toString();
+  } else {
+    updatedMinutes = '30';
+    updatedHours = hours.toString();
+  }
+  if(updatedHours[0] === 0) {
+      updatedHours = updatedHours.splice(1);
+  }
+  return updatedHours + updatedMinutes;
+};
+
+
 router.post('/submit', function(req, res) {
   models.Teacher.findOneAndUpdate({email: req.body.email}, {}, {upsert:true}, function(err, teacher) {
     if(err) { console.log(err); }
@@ -29,42 +59,12 @@ router.post('/submit', function(req, res) {
     // first clean out existing teacher slots to then refresh
     models.Timeslot.remove({teacher: teacher.id}, function(err, timeslots) {
       if(err) { console.log(err); }
-      // console.log('slots to delete', timeslots);
 
       var availableTimes = req.body.available;
-
-      // async.eachSeries(availableTimes, function(timeDayVal, cb) {
-      //   var timeDayArr = timeDayVal.split(' '); // '9 7.14' --> ['9', '7.14']
-      //   var start = parseInt(timeDayArr[0], 10);
-      //   var end = start + 1; // assumes that length is ONE HOUR
-      //   var date = {
-      //     month: timeDayArr[1].split('.')[0],
-      //     day: timeDayArr[1].split('.')[1] // date[0] is month; date[1] is day
-      //   };
-      //   cb(null);
-      // }, function(err) {
-      //   if(err) { console.log(err); }
-      //   models.Timeslot.create({
-      //     start: start,
-      //     end: end,
-      //     date: moment(new Date(2014, date.month - 1 , date.day)), // months are zero indexed with moment
-      //     teacher: teacher.id
-      //   }, function(err, timeslot) {
-      //     // console.log('timeslot in create', timeslot);
-      //     console.log('teacher before push', teacher);
-      //     teacher.timeslots = [];
-      //     teacher.timeslots.push(timeslot._id);
-      //     teacher.save(function(err, teacher) {
-      //       console.log('teacher in ts create', teacher);
-      //       res.send(200, 'found teacher');
-      //     });
-      //   });
-      // });
 
       teacher.timeslots = [];
 
       if(availableTimes.length === 0) {
-        // teacher.timeslots = [];
         teacher.save(function(err, teacher) {
           console.log('teacher in ts create', teacher);
           res.send(200, 'found teacher');
@@ -76,7 +76,7 @@ router.post('/submit', function(req, res) {
       async.each(availableTimes, function(timeDayVal, cb) {
         var timeDayArr = timeDayVal.split(' '); // '9 7.14' --> ['9', '7.14']
         var start = parseInt(timeDayArr[0], 10);
-        var end = start + 1; // assumes that length is ONE HOUR
+        var end = start + lessonDuration; // assumes that length is ONE HOUR
         var date = {
           month: timeDayArr[1].split('.')[0],
           day: timeDayArr[1].split('.')[1] // date[0] is month; date[1] is day
@@ -89,13 +89,8 @@ router.post('/submit', function(req, res) {
           date: moment(new Date(2014, date.month - 1 , date.day)), // months are zero indexed with moment
           teacher: teacher.id
         }, function(err, timeslot) {
-          // console.log('timeslot in create', timeslot);
-          // console.log('teacher before push', teacher);
           teacher.timeslots.push(timeslot._id);
-          // teacher.save(function(err, teacher) {
-            // console.log('teacher in ts create', teacher);
             cb(null);
-          // });
         });
       }, function(err) {
         if(err) { console.log(err); }
@@ -103,12 +98,7 @@ router.post('/submit', function(req, res) {
           res.send(200, 'found teacher');
         });
       });
-        // .forEach(function(timeDayVal) {
-      // });
     });
-    // teacher.timeslots = null;
-    // teacher.save();
-
   });
 });
 
@@ -120,9 +110,7 @@ router.get('/bytime/show', function(req, res) { // by timeslots
       cb(err, new Timeslot(t.date, t.start, t.end, t.teacher, t.reservedFor, t.requestedBy));
     }, function(err, timeslotArr) {
       async.eachSeries(timeslotArr, function(t, cb) { // populate timeslots with teacherObjs
-        // console.log('t', t);
         models.Teacher.findById(t.teacher, function(err, teacher) {
-          // console.log('teacher', teacher);
           t.teacherObj = teacher;
           cb(null);
         });
@@ -137,53 +125,27 @@ router.get('/bytime/show', function(req, res) { // by timeslots
 router.get('/byteacher/show', function(req, res) { // by teachers
   models.Teacher.find({}, function(err, teachers) {
     if(err) { console.log(err); }
-    console.log('byteacher', teachers);
 
     async.mapSeries(teachers, function(t, cb1) {
       cb1(err, new Teacher(t.email, t.timeslots));
     }, function(err, teacherArr) {
-      async.eachSeries(teacherArr, function(tInstance, cb2) { // populate timeslots with teacherObjs
-        async.eachSeries(tInstance.timeslots, function(timeslotId, cb3) {
-          // console.log('id?', timeslotId);
+      async.eachSeries(teacherArr, function(tInstance, cbx) { // populate timeslots with teacherObjs
+        async.each(tInstance.timeslots, function(timeslotId, cb3) {
           models.Timeslot.find({ _id: timeslotId }, function(err, tObj) {
-          // console.log('t.timeslotObj', tInstance.timeslotObj);
-          // console.log('tObj?', tObj[0]);
-          // console.log('tInstance', tInstance);
-          tInstance.timeslotObj.push(tObj[0]);
-          // console.log('post push of TimeslotObj?', tInstance.timeslotObj);
-          // console.log('post push of teacherArr', teacherArr);
-          cb3(null);
-        }, function(err) {
-          if(err) { console.log(err); }
-          cb2(null);
-          // console.log('post push of TimeslotObj?', tInstance.timeslotObj);
+            tInstance.timeslotObj.push(tObj[0]);
+            cb3(null);
           });
         }, function(err) {
           if(err) { console.log(err); }
-          // console.log('pre send JSON of teacherArr', teacherArr);
-          res.json(teacherArr);
+          cbx(null);
         });
+      }, function(err) {
+        if(err) { console.log(err); }
+        console.log('pre send JSON of teacherArr', teacherArr);
+        res.json(teacherArr);
       });
     });
   });
 });
 
 module.exports = router;
-
-
-  // models.User.findOne({fbId: req.user.fbId }, function(err, user) {
-  //   if(err) { console.log(err); }
-  //   console.log('Confirmed user', user);
-  //   console.log('Confirmed amazon email', req.body.email);
-  //   user.customerEmail = req.body.email;
-  //   user.submittedEmail = true;
-  //   user.save(function() {
-  //     var data = {
-  //       user: user
-  //     };
-  //     mailer.composeMail(user.email, mailtemplates.emailConfirm, data, function(mailOptions) {
-  //       mailer.sendMail(mailOptions);
-  //       res.send(200);
-  //     });
-  //   });
-  // });

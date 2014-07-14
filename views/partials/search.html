@@ -6,12 +6,10 @@
     <div class="clearfix"></div>
     <hr class="break" />
     <!-- select day via dropdown -->
-    <!-- <h3>1) Select Day:</h3> -->
-    <div class="clearfix"></div>
 
-    <div class="button-nav">
+    <div class="button-nav container">
       <div class="btn-group div-left">
-        <button ng-repeat="date in weekdates" ng-click="sortByDay(this.date)" id='{{ weekdates[$index] }}' ng-show="!$first" type="button" class="btn btn-default">{{ weekdates[$index] }}</button>
+        <button ng-repeat="date in weekdates" ng-click="sortByDay(this.date)" ng-show="!$first" type="button" class="btn btn-default">{{ weekdates[$index] }}</button>
       </div>
       <div class="btn-group div-right">
         <button type="button" ng-click="" class="btn btn-default">Morning</button>
@@ -20,24 +18,22 @@
       </div>
     </div>
 
-    <div>
-      <!-- <div ng-repeat="teacher in dataset.bytime | orderBy: 'date'"> -->
+    <div class="clearfix"></div>
+    <div class="search-results">
       <div ng-repeat="teacher in dataset.byteacher">
-        <!-- {{ teacher.teacherObj.email }} -->
-        <!-- <div class="container row" ng-repeat="order in orders | orderBy: '-date'"> -->
-        <ul>
-          <li>{{teacher.email}}</li>
-          <li>{{teacher.timeslots}}</li>
-          <li>{{teacher}}</li>
-        </ul>
+        <div class="teacher-timeslot">
+          <h3>{{ teacher.email }}</h3>
+          <ul>
+            <li id="{{ teacher.timeslotObj[$index].date | date: 'M.d' }}" ng-repeat="obj in teacher.timeslotObj">
+              <div class="timeslot-date"><h4>{{ teacher.timeslotObj[$index].date | date: 'MMMM d' }}</h4></div>
+              <div class="timeslot-time"><h4>Time: {{ teacher.timeslotObj[$index].start }} -
+              {{ teacher.timeslotObj[$index].end }}</h4></div>
+              <button class="btn btn-success timeslot-btn" ng-click="">Request</button>
+            </li>
+          </ul>
+        </div>
+
       </div>
-      <!-- <div ng-repeat="teacher in dataset.bytimes">
-        <ul>
-          <li>{{teacher.email}}</li>
-          <li>{{teacher.timeslots}}</li>
-          <li>{{teacher}}</li>
-        </ul>
-      </div> -->
     </div>
 
   </div>

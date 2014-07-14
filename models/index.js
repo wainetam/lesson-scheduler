@@ -65,7 +65,6 @@ var scheduleSchema = new Schema({ // for next 7 days
     confirmed: [{ type: Schema.Types.ObjectId, ref: 'Timeslot' }],
     availability: [{ type: Schema.Types.ObjectId, ref: 'Timeslot' }]
   }
-  // teacher: {type: Schema.Types.ObjectId, ref: 'Teacher' }
 });
 
 var timeslotSchema = new Schema({

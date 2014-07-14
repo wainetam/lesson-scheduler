@@ -14,3 +14,23 @@
 ol, ul, li {
   list-style-type: none
 }
+
+.timeslot-date {
+  display: inline-block;
+}
+
+.timeslot-time {
+  display: inline-block;
+}
+
+.timeslot-btn {
+  vertical-align: middle;
+  margin-top: 2px;
+  float: right;
+}
+
+.search-results {
+  width: 40%;
+  margin-left: auto;
+  margin-right: auto;
+}

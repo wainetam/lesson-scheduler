@@ -3,8 +3,8 @@ var app = {};
 // TEACHER SPA
 app.teacher = angular.module('app.teacher',
   ['teacher.controllers',
+  'app.filters',
   // 'teacher.services',
-  // 'teacher.filters',
   'ngRoute',
   'ngResource'
   ]);
@@ -15,10 +15,6 @@ app.teacher.config(['$routeProvider', '$locationProvider', function($routeProvid
       templateUrl: 'partials/schedule.html',
       controller: 'Teacher'
     })
-    // .when('/test', {
-    //   templateUrl: 'partials/stud.html',
-    //   controller: 'Teacher'
-    // })
     .otherwise({
       redirectTo: '/'
     });
@@ -28,8 +24,8 @@ app.teacher.config(['$routeProvider', '$locationProvider', function($routeProvid
 app.student = angular.module('app.student',
   ['student.controllers',
   'teacher.controllers',
+  'app.filters',
   // 'student.services',
-  // 'student.filters',
   'ngRoute',
   'ngResource'
   ]);
@@ -40,10 +36,6 @@ app.student.config(['$routeProvider', '$locationProvider', function($routeProvid
       templateUrl: 'partials/search.html',
       controller: 'Teacher'
     })
-    // .when('/dashboard', {
-    //   templateUrl: 'partials/dash.html',
-    //   controller: 'DashCtrl'
-    // })
     .otherwise({
       redirectTo: '/'
     });
