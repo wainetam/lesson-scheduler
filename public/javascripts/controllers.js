@@ -60,23 +60,17 @@ angular.module('teacher.controllers', []).
       console.log($scope.form.available);
     };
 
-    // var convertSortDateToIsoDate = function(sortDay) {
-    //   var dayStr = sortDay.toString();
-
-    //   var month = dayStr.split('.')[0];
-    //   var day = dayStr.split('.')[1];
-
-    //   var sortDate = moment.utc(new Date(2014, month - 1 , day)).toISOString();
-    //   console.log('sortDate after moment', sortDate);
-    //   return sortDate.toString();
-    // };
-
     $scope.sortByDay = function(day) {
       console.log('this.day', day);
       $scope.filterDay = day;
       // $scope.filterDay = convertSortDateToIsoDate(day) || '';
       console.log("sorting!");
       console.log('$filterDay for sorting', $scope.filterDay);
+    };
+
+    $scope.regexFilter = function (dateStr) {
+      var reg = RegExp($scope.filterDay);
+      return reg.test(dateStr);
     };
 
     $scope.noTimeslots = function(teacherObj) {
@@ -96,11 +90,6 @@ angular.module('teacher.controllers', []).
       });
       return noSlots;
       // return teacherObj.timeslots.length === 0;
-    };
-
-    $scope.regexFilter = function (dateStr) {
-      var reg = RegExp($scope.filterDay);
-      return reg.test(dateStr);
     };
 
     var init = function() {
@@ -136,28 +125,23 @@ angular.module('student.controllers', []).
       studentEmail: '' // defined in html via ng-model
     };
 
-    $scope.select = function(timeslot) {
-      if($scope.isSelected) {
-        $scope.form.lessons.pop();
-        $scope.isSelected = false;
-      } else {
+    $scope.toggleSelect = function(timeslot) { // should refactor along with similar function in Teacher Controller
+      if($scope.form.lessons.indexOf(timeslot) === -1) {
         $scope.form.lessons.push(timeslot);
-        $scope.isSelected = true;
+      } else {
+        var idx = $scope.form.lessons.indexOf(timeslot);
+        $scope.form.lessons.splice(idx, 1);
       }
-      console.log('timeslot', timeslot);
       console.log('array', $scope.form.lessons);
     };
 
     var requestedTimes = function() {
       // if($location.path() == '/requests') { // should convert to RESTful service
-        // console.log('$scope.form', $scope.form.studentEmail);
         $http.get('/schedule/bystudent/show', {params: { email: $scope.form.studentEmail }}).success(function(dataByStudent, status, headers, config) {
           console.log('config', config);
           console.log('registered classes', dataByStudent);
           $scope.dataset.bystudent = dataByStudent; // inherit dataset scope obj from parent teacher ctrl
-          // $scope.studentData.registered = dataByStudent;
         });
-      // }
     };
     $scope.submit = function() {
       $scope.banner = null;
@@ -176,7 +160,4 @@ angular.module('student.controllers', []).
       });
     };
 
-    console.log('this click', this);
-
-    // init(); // run on page init
 }]);

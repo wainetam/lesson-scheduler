@@ -52,15 +52,17 @@
       <div ng-hide="displayResults" class="search-results">
         <div ng-repeat="teacher in dataset.byteacher | orderBy:'email'">
           <div class="teacher-timeslot">
-            <h3 ng-hide="noTimeslots(teacher)">{{ teacher.email }}</h3> <!-- hide if teacher has zero timeslots open -->
+            <h3>{{ teacher.email }}</h3> <!-- hide if teacher has zero timeslots open -->
             <ul>
-              <li ng-show='timeslot.open' ng-class="{'selected': isSelected}" id="{{ teacher.timeslotObj[$index].date }}" ng-repeat="timeslot in teacher.timeslotObj">
+              <!-- ng-class="{'selected': isSelected}" -->
+              <li ng-show='timeslot.open' id="{{ teacher.timeslotObj[$index].date }}" ng-repeat="timeslot in teacher.timeslotObj">
                 <div class="timeslot-date"><h4>{{ teacher.timeslotObj[$index].date | date: 'M.dd'}}</h4></div>
                  <!-- | date: 'MMMM d' -->
                 <div class="timeslot-time"><h4>Time: {{ teacher.timeslotObj[$index].start }} -
                 {{ teacher.timeslotObj[$index].end }}</h4></div>
 <!--                 <div class="timeslot-time"><h4>Open: {{ teacher.timeslotObj[$index].open }}</h4></div> -->
-                <button class="btn btn-warning timeslot-btn btn-sm" ng-click="select(this.timeslot)">Request</button>
+                <!-- <button class="btn btn-warning timeslot-btn btn-sm" ng-click="select(this.timeslot)">Request</button> -->
+                <div class="checkbox-schedule"><input type="checkbox" name="checkedTimes" ng-click="toggleSelect(this.timeslot)"></div>
               </li>
             </ul>
           </div>

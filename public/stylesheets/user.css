@@ -50,3 +50,12 @@ ol, ul, li {
 .display-results {
   width: 70%;
 }
+
+.checkbox-schedule {
+  /*height: 100%;*/
+  float: right;
+  padding-top: 7px;
+  vertical-align: middle;
+  display: block;
+  width: 50%;
+}
