@@ -92,17 +92,6 @@ angular.module('teacher.controllers', []).
       // return teacherObj.timeslots.length === 0;
     };
 
-    var init = function() {
-      // $http.get('/schedule/bytime/show').success(function(dataByTime, status, headers, config) {
-        $http.get('/schedule/byteacher/show').success(function(dataByTeacher, status, headers, config) {
-          // $scope.dataset.bytime = dataByTime;
-          $scope.dataset.byteacher = dataByTeacher;
-          console.log('dataset', $scope.dataset);
-        });
-      // });
-    };
-
-    init(); // run on page init
 }]);
 
 
@@ -159,5 +148,17 @@ angular.module('student.controllers', []).
         }
       });
     };
+
+    var init = function() {
+      // $http.get('/schedule/bytime/show').success(function(dataByTime, status, headers, config) {
+        $http.get('/schedule/byteacher/show').success(function(dataByTeacher, status, headers, config) {
+          // $scope.dataset.bytime = dataByTime;
+          $scope.dataset.byteacher = dataByTeacher;
+          console.log('dataset', $scope.dataset);
+        });
+      // });
+    };
+
+    init(); // run on page init
 
 }]);
