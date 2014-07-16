@@ -26,8 +26,8 @@ angular.module('teacher.controllers', []).
     $scope.daycount = [0,1,2,3,4,5,6]; // length
     $scope.dataset = {
       bytime: [],
-      byteacher: []
-      // bystudent: []
+      byteacher: [],
+      bystudent: []
     };
 
     $scope.filterDay = '';
@@ -105,11 +105,11 @@ angular.module('teacher.controllers', []).
 angular.module('student.controllers', []).
   controller('Student', ['$scope', '$http', '$location', '$timeout', '$filter', '$rootScope', function($scope, $http, $location, $timeout, $filter, $rootScope) {
 
-    // $scope.dataset.bystudent; // inherit dataset scope obj from teacher
+    // $scope.dataset.bystudent; // inherit dataset scope obj from parent teacher ctrl
 
-    $scope.studentData = { // in lieu of inheriting dataset object
-      registered: null
-    };
+    // $scope.studentData = { // in lieu of inheriting dataset object
+    //   registered: null
+    // };
 
     $scope.banner = null;
 
@@ -134,15 +134,13 @@ angular.module('student.controllers', []).
     };
 
     var requestedTimes = function() {
-      // console.log('email as param', email);
       // if($location.path() == '/requests') { // should convert to RESTful service
         // console.log('$scope.form', $scope.form.studentEmail);
         $http.get('/schedule/bystudent/show', {params: { email: $scope.form.studentEmail }}).success(function(dataByStudent, status, headers, config) {
-          // console.log('status', status);
-          // console.log('headers', headers);
           console.log('config', config);
           console.log('registered classes', dataByStudent);
-          $scope.studentData.registered = dataByStudent;
+          $scope.dataset.bystudent = dataByStudent; // inherit dataset scope obj from parent teacher ctrl
+          // $scope.studentData.registered = dataByStudent;
         });
       // }
     };
@@ -156,7 +154,7 @@ angular.module('student.controllers', []).
           $scope.displayResults = true;
           $timeout(function() {
             requestedTimes();
-          }, 1000);
+          }, 100);
         } else {
           $scope.banner = "Please submit your email";
         }

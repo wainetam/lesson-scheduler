@@ -152,10 +152,20 @@ router.get('/byteacher/show', function(req, res) { // by teachers
 });
 
 router.get('/bystudent/show', function(req, res) { // by teachers
-  // console.log('req.params', req);
-  models.Student.findOne({email: req.query.email}, function(err, student) {
-    if(err) { console.log(err); }
-    res.json(student);
+  models.Student.findOne({email: req.query.email}).populate('confirmed scheduled').exec(function(err, student) {
+    console.log('studentPopulated', student);
+    var teacherEmailArr = [];
+    async.eachSeries(student.confirmed, function(timeslot, cb) {
+      models.Timeslot.findById(timeslot._id).populate({path:'teacher'}).exec(function(err, timeslot) {
+        console.log('timeslot', timeslot);
+        teacherEmailArr.push(timeslot.teacher.email);
+        cb(null);
+      });
+    }, function(err) {
+      if(err) {console.log(err);}
+      console.log('emailArr', teacherEmailArr);
+      res.json({student: student, teachers: teacherEmailArr});
+    });
   });
 });
 

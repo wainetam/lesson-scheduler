@@ -30,9 +30,21 @@
         </form>
       </div>
 
-      <div ng-show="displayResults" class="requested-results container">
-        {{studentData.registered}}
-
+      <div ng-show="displayResults" class="search-results container">
+        <!-- {{dataset.bystudent}} -->
+        <table class="table table-striped">
+          <thead>
+          <th>Date</th><th>Time</th><th>Teacher</th>
+          </thead>
+          <tbody>
+          <tr>
+            <!-- <td ng-repeat="scheduled in dataset.bystudent.confirmed">{{scheduled}}</td> -->
+            <td ng-repeat="confirmed in dataset.bystudent.student.confirmed">{{confirmed.date | date: 'MMMM dd'}}</td>
+            <td ng-repeat="confirmed in dataset.bystudent.student.confirmed">{{confirmed.start}} - {{confirmed.end}}</td>
+            <td ng-repeat="email in dataset.bystudent.teachers">{{email}}</td>
+          </tr>
+          </tbody>
+        </table>
       </div>
 
       <div class="clearfix"></div>
@@ -42,11 +54,7 @@
           <div class="teacher-timeslot">
             <h3 ng-hide="noTimeslots(teacher)">{{ teacher.email }}</h3> <!-- hide if teacher has zero timeslots open -->
             <ul>
-              <li ng-class="{'selected': isSelected}" id="{{ teacher.timeslotObj[$index].date }}" ng-repeat="timeslot in teacher.timeslotObj | filter:{date: this.filterDay}" >
-                <!-- ng-class="{'selected': timeslot.isSelected}" -->
-  <!-- | array | filter:this.filterDay"> -->
-                <!-- ng-repeat="timeslot in teacher.timeslotObj | array | filter:this.filterDay: -->
-                <!-- filter:{date: this.filterDay} -->
+              <li ng-class="{'selected': isSelected}" id="{{ teacher.timeslotObj[$index].date }}" ng-repeat="timeslot in teacher.timeslotObj">
                 <div class="timeslot-date"><h4>{{ teacher.timeslotObj[$index].date | date: 'M.dd'}}</h4></div>
                  <!-- | date: 'MMMM d' -->
                 <div class="timeslot-time"><h4>Time: {{ teacher.timeslotObj[$index].start }} -

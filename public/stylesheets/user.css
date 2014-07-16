@@ -46,3 +46,7 @@ ol, ul, li {
   /*border-color: gray;*/
   /*color:white;*/
 }
+
+.display-results {
+  width: 70%;
+}

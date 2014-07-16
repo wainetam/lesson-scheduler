@@ -39,8 +39,8 @@ router.post('/submit', function(req, res) {
     console.log('input request', requestedLessons);
     async.each(requestedLessons, function(timeslot, cb) {
       console.log('requested timeslot', timeslot);
-      // student.scheduled.push(timeslot);
-      // findAvailTime(timeslot);
+      student.scheduled.push(timeslot._id);
+
       models.Timeslot.find({ date: timeslot.date, start: timeslot.start, end: timeslot.end, open: true }, function(err, availableArr) {
         if(availableArr.length === 0) {
           res.send(200, 'no available timeslot');
@@ -59,15 +59,17 @@ router.post('/submit', function(req, res) {
           // edit student object
           student.confirmed.push(foundTime);
           console.log('student while running search', student);
-
-          cb(null);
+          student.save(function(err) {
+            cb(null);
+          });
         });
         }
       });
     }, function(err) {
       if(err) { console.log(err); }
       console.log('array of confirmedTimes', confirmedTimes);
-      res.json(confirmedTimes);
+      // res.json(confirmedTimes);
+      res.send(200);
     });
   });
 });
