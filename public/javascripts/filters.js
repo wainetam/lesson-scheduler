@@ -6,7 +6,7 @@ angular.module('app.filters', [])
             // angular.forEach(item, function(subItem) {
                 // filtered.push(subItem);
             // });
-          filtered.push(item.date);
+          filtered.push(item.open); // formerly date
         });
         console.log('filteredarr', filtered);
        return filtered;

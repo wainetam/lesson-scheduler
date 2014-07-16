@@ -37,11 +37,11 @@
           <th>Date</th><th>Time</th><th>Teacher</th>
           </thead>
           <tbody>
-          <tr>
+          <tr ng-repeat="confirmed in dataset.bystudent.student.confirmed">
             <!-- <td ng-repeat="scheduled in dataset.bystudent.confirmed">{{scheduled}}</td> -->
-            <td ng-repeat="confirmed in dataset.bystudent.student.confirmed">{{confirmed.date | date: 'MMMM dd'}}</td>
-            <td ng-repeat="confirmed in dataset.bystudent.student.confirmed">{{confirmed.start}} - {{confirmed.end}}</td>
-            <td ng-repeat="email in dataset.bystudent.teachers">{{email}}</td>
+            <td>{{ confirmed.date | date: 'MMMM dd' }}</td>
+            <td>{{ confirmed.start }} - {{ confirmed.end }}</td>
+            <td>{{ dataset.bystudent.teachers[$index] }}</td>
           </tr>
           </tbody>
         </table>
@@ -54,12 +54,13 @@
           <div class="teacher-timeslot">
             <h3 ng-hide="noTimeslots(teacher)">{{ teacher.email }}</h3> <!-- hide if teacher has zero timeslots open -->
             <ul>
-              <li ng-class="{'selected': isSelected}" id="{{ teacher.timeslotObj[$index].date }}" ng-repeat="timeslot in teacher.timeslotObj">
+              <li ng-show='timeslot.open' ng-class="{'selected': isSelected}" id="{{ teacher.timeslotObj[$index].date }}" ng-repeat="timeslot in teacher.timeslotObj">
                 <div class="timeslot-date"><h4>{{ teacher.timeslotObj[$index].date | date: 'M.dd'}}</h4></div>
                  <!-- | date: 'MMMM d' -->
                 <div class="timeslot-time"><h4>Time: {{ teacher.timeslotObj[$index].start }} -
                 {{ teacher.timeslotObj[$index].end }}</h4></div>
-                <button class="btn btn-warning timeslot-btn btn-sm" ng-click="select(timeslot)">Request</button>
+<!--                 <div class="timeslot-time"><h4>Open: {{ teacher.timeslotObj[$index].open }}</h4></div> -->
+                <button class="btn btn-warning timeslot-btn btn-sm" ng-click="select(this.timeslot)">Request</button>
               </li>
             </ul>
           </div>

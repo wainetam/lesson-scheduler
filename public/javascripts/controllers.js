@@ -80,7 +80,22 @@ angular.module('teacher.controllers', []).
     };
 
     $scope.noTimeslots = function(teacherObj) {
-      return teacherObj.timeslots.length === 0;
+      var noSlots = false;
+
+      if(teacherObj.timeslots.length === 0) {
+        noSlots = true;
+      } else {
+        return noSlots;
+      }
+
+      teacherObj.timeslots.forEach(function(timeslot) {
+        console.log('noTimeslot', timeslot);
+        if(timeslot.open) {
+          noSlots = false;
+        }
+      });
+      return noSlots;
+      // return teacherObj.timeslots.length === 0;
     };
 
     $scope.regexFilter = function (dateStr) {
@@ -161,6 +176,7 @@ angular.module('student.controllers', []).
       });
     };
 
+    console.log('this click', this);
 
     // init(); // run on page init
 }]);
