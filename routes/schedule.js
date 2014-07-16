@@ -151,4 +151,12 @@ router.get('/byteacher/show', function(req, res) { // by teachers
   });
 });
 
+router.get('/bystudent/show', function(req, res) { // by teachers
+  // console.log('req.params', req);
+  models.Student.findOne({email: req.query.email}, function(err, student) {
+    if(err) { console.log(err); }
+    res.json(student);
+  });
+});
+
 module.exports = router;

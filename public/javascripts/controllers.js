@@ -1,5 +1,5 @@
 angular.module('teacher.controllers', []).
-  controller('Teacher', ['$scope', '$http', '$location', '$filter', function($scope, $http, $location, $filter) {
+  controller('Teacher', ['$scope', '$http', '$location', '$filter', '$timeout', function($scope, $http, $location, $filter, $timeout) {
     $scope.form = {
       time: null,
       email: "",
@@ -27,18 +27,24 @@ angular.module('teacher.controllers', []).
     $scope.dataset = {
       bytime: [],
       byteacher: []
+      // bystudent: []
     };
+
     $scope.filterDay = '';
     $scope.banner = null;
     // $scope.testDate = '2014-07-19T04:00:00.000Z';
 
     $scope.submitCal = function() {
+      $scope.banner = null;
       if($scope.form.email) {
         console.log('form', $scope.form);
         $http.post('/schedule/submit', $scope.form).success(function(response) {
           console.log('submitCal success', response);
+          $scope.form.email = '';
           $scope.banner = "Your available times have been registered";
         });
+      } else {
+        $scope.banner = "Please submit email";
       }
     };
 
@@ -83,13 +89,13 @@ angular.module('teacher.controllers', []).
     };
 
     var init = function() {
-      $http.get('/schedule/bytime/show').success(function(dataByTime, status, headers, config) {
+      // $http.get('/schedule/bytime/show').success(function(dataByTime, status, headers, config) {
         $http.get('/schedule/byteacher/show').success(function(dataByTeacher, status, headers, config) {
-          $scope.dataset.bytime = dataByTime;
+          // $scope.dataset.bytime = dataByTime;
           $scope.dataset.byteacher = dataByTeacher;
           console.log('dataset', $scope.dataset);
         });
-      });
+      // });
     };
 
     init(); // run on page init
@@ -97,6 +103,66 @@ angular.module('teacher.controllers', []).
 
 
 angular.module('student.controllers', []).
-  controller('Student', ['$scope', '$http', '$location', '$filter', function($scope, $http, $location, $filter) {
+  controller('Student', ['$scope', '$http', '$location', '$timeout', '$filter', '$rootScope', function($scope, $http, $location, $timeout, $filter, $rootScope) {
 
+    // $scope.dataset.bystudent; // inherit dataset scope obj from teacher
+
+    $scope.studentData = { // in lieu of inheriting dataset object
+      registered: null
+    };
+
+    $scope.banner = null;
+
+    $scope.isSelected = false;
+    $scope.displayResults = false;
+
+    $scope.form = {
+      lessons: [],
+      studentEmail: '' // defined in html via ng-model
+    };
+
+    $scope.select = function(timeslot) {
+      if($scope.isSelected) {
+        $scope.form.lessons.pop();
+        $scope.isSelected = false;
+      } else {
+        $scope.form.lessons.push(timeslot);
+        $scope.isSelected = true;
+      }
+      console.log('timeslot', timeslot);
+      console.log('array', $scope.form.lessons);
+    };
+
+    var requestedTimes = function() {
+      // console.log('email as param', email);
+      // if($location.path() == '/requests') { // should convert to RESTful service
+        // console.log('$scope.form', $scope.form.studentEmail);
+        $http.get('/schedule/bystudent/show', {params: { email: $scope.form.studentEmail }}).success(function(dataByStudent, status, headers, config) {
+          // console.log('status', status);
+          // console.log('headers', headers);
+          console.log('config', config);
+          console.log('registered classes', dataByStudent);
+          $scope.studentData.registered = dataByStudent;
+        });
+      // }
+    };
+    $scope.submit = function() {
+      $scope.banner = null;
+      $http.post('/student/submit', $scope.form).success(function(response) {
+        console.log($scope.form);
+        if($scope.form.studentEmail) {
+          $scope.banner = "Your requested times are below:";
+          console.log('submitted', response);
+          $scope.displayResults = true;
+          $timeout(function() {
+            requestedTimes();
+          }, 1000);
+        } else {
+          $scope.banner = "Please submit your email";
+        }
+      });
+    };
+
+
+    // init(); // run on page init
 }]);

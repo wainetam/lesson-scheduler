@@ -19,28 +19,45 @@
       </div>
     </div>
 
-    <div class="clearfix"></div>
-    <div class="search-results">
-      <div ng-repeat="teacher in dataset.byteacher | orderBy:'email'">
-        <div class="teacher-timeslot">
-          <h3 ng-hide="noTimeslots(teacher)">{{ teacher.email }}</h3> <!-- hide if teacher has zero timeslots open -->
-          <ul>
-            <li id="{{ teacher.timeslotObj[$index].date }}" ng-repeat="obj in teacher.timeslotObj | filter:{date: this.filterDay}">
-<!-- | array | filter:this.filterDay"> -->
-              <!-- ng-repeat="obj in teacher.timeslotObj | array | filter:this.filterDay: -->
-              <!-- filter:{date: this.filterDay} -->
-              <div class="timeslot-date"><h4>{{ teacher.timeslotObj[$index].date | date: 'M.dd'}}</h4></div>
-               <!-- | date: 'MMMM d' -->
-              <div class="timeslot-time"><h4>Time: {{ teacher.timeslotObj[$index].start }} -
-              {{ teacher.timeslotObj[$index].end }}</h4></div>
-              <button class="btn btn-success timeslot-btn btn-sm" ng-click="">Request</button>
-            </li>
-          </ul>
-        </div>
+    <br />
+    <section ng-controller="Student">
+      <div class="container search-results text-center">
+        <form class="form-inline" ng-submit="submit()">
+          <div class="form-group">
+            <input class='form-control' type: "email" placeholder="Email" ng-model="form.studentEmail" name="email">
+          </div>
+          <button class='btn btn-success' type="submit">Submit</button> <h3 class='banner-inline'>{{banner}}</h3>
+        </form>
+      </div>
+
+      <div ng-show="displayResults" class="requested-results container">
+        {{studentData.registered}}
 
       </div>
-    </div>
 
+      <div class="clearfix"></div>
+
+      <div ng-hide="displayResults" class="search-results">
+        <div ng-repeat="teacher in dataset.byteacher | orderBy:'email'">
+          <div class="teacher-timeslot">
+            <h3 ng-hide="noTimeslots(teacher)">{{ teacher.email }}</h3> <!-- hide if teacher has zero timeslots open -->
+            <ul>
+              <li ng-class="{'selected': isSelected}" id="{{ teacher.timeslotObj[$index].date }}" ng-repeat="timeslot in teacher.timeslotObj | filter:{date: this.filterDay}" >
+                <!-- ng-class="{'selected': timeslot.isSelected}" -->
+  <!-- | array | filter:this.filterDay"> -->
+                <!-- ng-repeat="timeslot in teacher.timeslotObj | array | filter:this.filterDay: -->
+                <!-- filter:{date: this.filterDay} -->
+                <div class="timeslot-date"><h4>{{ teacher.timeslotObj[$index].date | date: 'M.dd'}}</h4></div>
+                 <!-- | date: 'MMMM d' -->
+                <div class="timeslot-time"><h4>Time: {{ teacher.timeslotObj[$index].start }} -
+                {{ teacher.timeslotObj[$index].end }}</h4></div>
+                <button class="btn btn-warning timeslot-btn btn-sm" ng-click="select(timeslot)">Request</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
   {% endraw %}
 </section>

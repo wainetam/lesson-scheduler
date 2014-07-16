@@ -12,7 +12,7 @@ var swig = require('swig'),
 var routes = require('./routes/index');
 var schedule = require('./routes/schedule');
 // var teacher = require('./routes/teacher');
-// var student = require('./routes/student');
+var student = require('./routes/student');
 var models = require('./models');
 
 var app = express();
@@ -36,7 +36,7 @@ app.use('/teacher', express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/schedule', schedule);
-// app.use('/student', student);
+app.use('/student', student);
 // app.use('/teacher', teacher);
 // app.use('/partials/:name', routes);
 // app.use('/users', users);

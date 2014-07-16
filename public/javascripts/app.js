@@ -33,8 +33,12 @@ app.student = angular.module('app.student',
 app.student.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
   $routeProvider
     .when('/', {
-      templateUrl: 'partials/search.html',
-      controller: 'Teacher'
+      templateUrl: 'partials/search.html'
+      // controller: 'Teacher'
+    })
+    .when('/requests', {
+      templateUrl: 'partials/requests.html',
+      controller: 'Student'
     })
     .otherwise({
       redirectTo: '/'

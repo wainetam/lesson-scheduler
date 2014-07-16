@@ -16,7 +16,8 @@ var studentSchema = new Schema({
   email: String,
   firstName: String,
   lastName: String,
-  schedule: { type: Schema.Types.ObjectId, ref: 'Timeslot' }
+  scheduled: [{ type: Schema.Types.ObjectId, ref: 'Timeslot' }],
+  confirmed: [{ type: Schema.Types.ObjectId, ref: 'Timeslot' }]
 });
 
 var teacherSchema = new Schema({
@@ -83,7 +84,7 @@ var timeslotSchema = new Schema({
   requestedBy: [{ type: Schema.Types.ObjectId, ref: 'Student'}],  // student who requested
   confirmed: { type: Boolean, default: false }, // to be confirmed by teacher
   reservedFor: { type: Schema.Types.ObjectId, ref: 'Student', default: null }, // if confirmed,
-  length: { type: Number, default: 30 },
+  length: { type: Number, default: 60 }, // default to 60min
   teacher: { type: Schema.Types.ObjectId, ref: 'Teacher' }
 });
 

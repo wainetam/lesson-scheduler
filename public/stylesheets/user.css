@@ -38,5 +38,11 @@ ol, ul, li {
 .banner-inline {
   display: inline-block;
   color: green;
+}
 
+.selected {
+  /*text-decoration: line-through;*/
+  background-color: #EC971F;
+  /*border-color: gray;*/
+  /*color:white;*/
 }
