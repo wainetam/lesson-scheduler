@@ -31,14 +31,12 @@
       </div>
 
       <div ng-show="displayResults" class="search-results container">
-        <!-- {{dataset.bystudent}} -->
         <table class="table table-striped">
           <thead>
           <th>Date</th><th>Time</th><th>Teacher</th>
           </thead>
           <tbody>
           <tr ng-repeat="confirmed in dataset.bystudent.student.confirmed">
-            <!-- <td ng-repeat="scheduled in dataset.bystudent.confirmed">{{scheduled}}</td> -->
             <td>{{ confirmed.date | date: 'MMMM dd' }}</td>
             <td>{{ confirmed.start }} - {{ confirmed.end }}</td>
             <td>{{ dataset.bystudent.teachers[$index] }}</td>
@@ -57,7 +55,6 @@
               <!-- ng-class="{'selected': isSelected}" -->
               <li ng-show='timeslot.open' id="{{ teacher.timeslotObj[$index].date }}" ng-repeat="timeslot in teacher.timeslotObj">
                 <div class="timeslot-date"><h4>{{ teacher.timeslotObj[$index].date | date: 'M.dd'}}</h4></div>
-                 <!-- | date: 'MMMM d' -->
                 <div class="timeslot-time"><h4>Time: {{ teacher.timeslotObj[$index].start }} -
                 {{ teacher.timeslotObj[$index].end }}</h4></div>
 <!--                 <div class="timeslot-time"><h4>Open: {{ teacher.timeslotObj[$index].open }}</h4></div> -->

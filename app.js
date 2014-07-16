@@ -37,11 +37,6 @@ app.use('/teacher', express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/schedule', schedule);
 app.use('/student', student);
-// app.use('/teacher', teacher);
-// app.use('/partials/:name', routes);
-// app.use('/users', users);
-// app.use('/teacher', teacher);
-// app.use('/student', student);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
@@ -78,11 +73,5 @@ http.createServer(app).listen(app.get('port'), function(err){
   if(err) {console.log(err);}
   console.log('Express server listening on port ' + app.get('port'));
 });
-
-// var bordi = new models.Teacher({email: 'bordi@gmail.com'});
-
-// bordi.save(function(err, teacher) {
-//   console.log("Miss Bordi is back!");
-// });
 
 module.exports = app;
